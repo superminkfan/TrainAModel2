@@ -42,10 +42,7 @@ def format_question(title):
     english_title = translate_to_english(title)
     system_prompt = f"You generate meaningful questions based on given topics."
 
-    #system_prompt_for_question = f"You are a helpful AI assistant.
-    # Your task is to help a user understand how to use functions and classes from Apple's Deep Learning framework, MLX.
-    # Carefully examine the function documentation snippet and generate 3 questions a medium to experienced MLX user could ask.
-    # Questions must be answerable from the information in the snippet.
+   # system_prompt_for_question = f"You are a helpful AI assistant. Your task is to help a user understand how to use Apache Ignite. Carefully examine the documentation snippet and generate 3 questions a medium to experienced Apache Ignite user could ask. Questions must be answerable from the information in the snippet.
     # Do not assume anything about MLX's API that is not discussed in the snippet.
     # If the snippet is too short or contains too little information, output an empty JSON array."
 
@@ -61,7 +58,7 @@ def format_question(title):
         {"role": "user", "content": prompt}])
     question = response['message']['content'].strip()
 
-    return question if question.endswith('?') else question + '?'
+    return question
 
 # Читаем файл
 with open(input_file, "r", encoding="utf-8") as f:
@@ -86,6 +83,7 @@ for i in range(0, len(sections), 2):
     print(russian_title)
     print(question)
     print(answer)
+    print("==== Iteration " + str(i) + " completed ====")
 
     faq_list.append({"prompt": question, "response": answer})
 
