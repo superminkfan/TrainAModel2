@@ -3,7 +3,7 @@ import re
 import ollama
 import json
 from deep_translator import GoogleTranslator
-
+import requests
 import sys
 import time
 import threading
@@ -107,6 +107,7 @@ faq_list = []
 
 # for i in range(0, len(sections), 2):
 count = 0
+error_count = 0
 for i in range(0, len(sections), 2):
     print("==== Iteration " + str(count) + " ====")
 
@@ -121,6 +122,7 @@ for i in range(0, len(sections), 2):
         topic = translate_to_english(text)
     except Exception as e:  # Ловит любые исключения:
         print("Error in translation!!! text = " + str(text))
+        error_count += 1
         topic = error_msg
 
     try:
@@ -137,20 +139,28 @@ for i in range(0, len(sections), 2):
             print()
             print("Answer = " + answer)
 
+
             faq_list.append({"prompt": question, "response": answer})
+
+            # Записываем JSON **на каждой итерации**
+            with open(output_file, "w", encoding="utf-8") as f:
+                json.dump(faq_list, f, ensure_ascii=False, indent=2)
+
     except Exception as e:
         print(f"Another exception! {e} \nquestions_array = " + str(questions_array))
+        error_count += 1
         pass
 
 
     print("==== Iteration " + str(count) + " completed ====")
     count += 1
 
-# Записываем в JSON
-with open(output_file, "w", encoding="utf-8") as f:
-    json.dump(faq_list, f, ensure_ascii=False, indent=2)
+# # Записываем в JSON
+# with open(output_file, "w", encoding="utf-8") as f:
+#     json.dump(faq_list, f, ensure_ascii=False, indent=2)
 
 print(f"JSON файл сохранен: {output_file}")
+print("Количество ошибок = " + error_count)
 
 
 
