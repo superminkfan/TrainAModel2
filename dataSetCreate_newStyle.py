@@ -1,9 +1,7 @@
-import json
 import re
 import ollama
 import json
 from deep_translator import GoogleTranslator
-import requests
 import sys
 import time
 import threading
@@ -105,9 +103,9 @@ with open(input_file, "r", encoding="utf-8") as f:
 sections = section_pattern.split(content)[1:]
 faq_list = []
 
-# for i in range(0, len(sections), 2):
 count = 0
 error_count = 0
+
 for i in range(0, len(sections), 2):
     print("==== Iteration " + str(count) + " ====")
 
@@ -151,17 +149,11 @@ for i in range(0, len(sections), 2):
         error_count += 1
         pass
 
-
     print("==== Iteration " + str(count) + " completed ====")
     count += 1
 
-# # Записываем в JSON
-# with open(output_file, "w", encoding="utf-8") as f:
-#     json.dump(faq_list, f, ensure_ascii=False, indent=2)
-
 print(f"JSON файл сохранен: {output_file}")
 print("Количество ошибок = " + error_count)
-
 
 
 # Останавливаем анимацию
