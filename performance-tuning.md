@@ -169,7 +169,7 @@ NUMA (Non-Uniform Memory Access) — дизайн памяти, при кото�
    </property>
    :::
 
-2. Чередующееся распределение на указанных NUMA-узлах. Использует `void *numa_alloc_interleaved_subset(size_t, struct bitmask*)`.
+2. Striped distribution on specified NUMA nodes. Uses `void *numa_alloc_interleaved_subset(size_t, struct bitmask*)`.
 
    :::{code-block} xml
    :caption: XML
@@ -199,9 +199,9 @@ NUMA (Non-Uniform Memory Access) — дизайн памяти, при кото�
    </property>
    :::
 
-**Аллокация на локальном узле (local node allocation):**
+**local node allocation:**
 
-Выделение памяти на локальном для процесса NUMA-узле. Использует `void* numa_alloc_onnode(size_t)`.
+Memory allocation on process-local NUMA node. Uses `void* numa_alloc_onnode(size_t)`.
 
 :::{code-block} xml
 :caption: XML
@@ -226,8 +226,9 @@ NUMA (Non-Uniform Memory Access) — дизайн памяти, при кото�
 </property>
 :::
 
-В большей части сценариев оптимальным выбором будет стратегия чередующейся аллокации на всех NUMA-узлах (interleaved allocation on all NUMA nodes). С ней все страницы региона данных будут равномерно распределены между всеми NUMA-узлами.
+In most scenarios, the optimal choice will be the strategy of interleaved allocation on all NUMA nodes. With it, all pages of the data region will be evenly distributed among all NUMA nodes. NUMA optimization for heap in G1 GC
 
+On Java version 8 and newer, you can enable NUMA optimization for the G1 garbage collector (more details on its configuration are described below in the section [«Garbage Collection (GC)»](#garbage-collection-gc)). This optimization shows the best results on Java version 14 and newer. This is due to the fact that for versions below 14, only interleaved heap allocation is implemented. In Java version 14 and newer, NUMA-aware support is implemented. The heap is divided into segments that are allocated to NUMA nodes. The same nodes are where the application or DataGrid server node threads (mutators) that are associated with the segments run. To enable NUMA for G1, add the JVM option `-XX:+UseNUMA`.
 #### NUMA-оптимизация для heap в G1 GC
 
 На Java версии 8 и новее можно включить NUMA-оптимизацию для сборщика мусора G1 (подробнее о его настройке написано ниже в разделе [«Сборка мусора (GC)»](#сборка-мусора-gc)). Лучшие результаты эта оптимизация показывает на Java версии 14 и новее. Это связано с тем, что для версий ниже 14 реализована только чередующаяся аллокация heap.
